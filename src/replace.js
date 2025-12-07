@@ -50,7 +50,7 @@
       const updatedChild = updatedChildren[i];
 
       if (!originalChild && updatedChild) {
-        const newChild = updatedChild.cloneNode(true);
+        const newChild = updatedChild.nodeType === Node.ELEMENT_NODE && updatedChild.tagName === "SCRIPT" ? createExecutableScript(updatedChild) : updatedChild.cloneNode(true);
         container.appendChild(newChild);
       } else if (originalChild && !updatedChild) {
         originalChild.remove();
@@ -71,12 +71,19 @@
       if (originalChild.tagName === updatedChild.tagName) {
         updateElementNode(originalChild, updatedChild);
       } else {
-        const clonedNode = updatedChild.cloneNode(true);
+        const clonedNode = updatedChild.tagName === "SCRIPT" ? createExecutableScript(updatedChild) : updatedChild.cloneNode(true);
         originalChild.replaceWith(clonedNode);
       }
     } else {
-      const clonedNode = updatedChild.cloneNode(true);
+      const clonedNode = updatedChild.nodeType === Node.ELEMENT_NODE && updatedChild.tagName === "SCRIPT" ? createExecutableScript(updatedChild) : updatedChild.cloneNode(true);
       originalChild.replaceWith(clonedNode);
     }
+  }
+
+  function createExecutableScript(oldScript) {
+    const newScript = document.createElement("script");
+    Array.from(oldScript.attributes).forEach((attr) => newScript.setAttribute(attr.name, attr.value));
+    newScript.textContent = oldScript.textContent;
+    return newScript;
   }
 })();
