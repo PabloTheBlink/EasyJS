@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>EasyJS Verification</title>
+    <script type="module" src="../EasyJS.js"></script>
+    <style>
+      .pass {
+        color: green;
+      }
+      .fail {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="test-container" class="original" data-id="1">
+      <span>Hello</span>
+      <div id="nested">Nested Original</div>
+    </div>
+
+    <div id="results"></div>
+
+    <script type="module">
+      const container = document.getElementById("test-container");
+      const results = document.getElementById("results");
+
+      function assert(condition, message) {
+        const div = document.createElement("div");
+        div.textContent = message + ": " + (condition ? "PASS" : "FAIL");
+        div.className = condition ? "pass" : "fail";
+        results.appendChild(div);
+        if (!condition) console.error(message);
+      }
+
+      // Keep reference to original child to check partial updates
+      const originalSpan = container.firstElementChild;
+      const originalNested = container.lastElementChild;
+
+      const newContent = `
+            <div id="test-container" class="updated" data-new="true">
+                <span>Hello World</span>
+                <div id="nested">Nested Updated</div>
+                <p>New Paragraph</p>
+            </div>
+        `;
+
+      // TEST 1: Replace matching tag
+      try {
+        container.replace(newContent);
+      } catch (e) {
+        assert(false, "Replace threw exception: " + e.message);
+      }
+
+      // Checks
+      assert(container.getAttribute("class") === "updated", "Class attribute updated");
+      assert(container.getAttribute("data-id") === null, "Old attribute removed");
+      assert(container.getAttribute("data-new") === "true", "New attribute added");
+
+      assert(container.firstElementChild === originalSpan, "Span element identity preserved");
+      assert(container.firstElementChild.textContent === "Hello World", "Span text updated");
+
+      assert(container.children[1] === originalNested, "Nested div identity preserved");
+      assert(container.children[1].textContent === "Nested Updated", "Nested div text updated");
+
+      assert(container.children.length === 3, "New child added");
+      assert(container.children[2].tagName === "P", "New child is P tag");
+      assert(container.children[2].textContent === "New Paragraph", "New child text correct");
+
+      // TEST 2: Replace with totally different tag (should replace Self)
+      // Note: replace() on prototype usually replaces *content* or attributes if matching,
+      // but if the outer tag differs, my implementation calls replaceWith().
+      // However, `this` is the element. `this.replaceWith` replaces the element in the parent.
+      // Let's test that.
+
+      const parent = document.createElement("div");
+      const child = document.createElement("span");
+      parent.appendChild(child);
+
+      // Mock replaceWith if not in JSDOM (JSDOM supports it though)
+      child.replace("<button>Click</button>");
+
+      assert(parent.firstElementChild.tagName === "BUTTON", "Element replaced entirely when tag differs");
+
+      document.body.appendChild(document.createElement("hr"));
+    </script>
+  </body>
+</html>
