@@ -46,6 +46,30 @@ const newState = `
 app.replace(newState);
 ```
 
+## SPA Features
+
+EasyJS includes a built-in lightweight SPA router that intercepts links and serves pages via `fetch` + `.replace()`.
+
+### Auto-Enable
+
+Simply add the `spa` attribute to your `<html>` tag to automatically enable SPA mode on page load.
+
+```html
+<html lang="en" spa></html>
+```
+
+### Manual Control
+
+You can also control SPA mode programmatically:
+
+```javascript
+// Enable SPA handling
+window.enableSPA();
+
+// Disable SPA handling (reverts to standard navigation)
+window.disableSPA();
+```
+
 ## API Reference
 
 ### `element.replace(newContent)`

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPA Toggle Test</title>
+  </head>
+  <body style="padding: 20px; font-family: sans-serif">
+    <h1>SPA Toggle Test</h1>
+    <div id="status" style="padding: 10px; background: #eee; margin-bottom: 10px">Status: Initialized</div>
+
+    <div id="controls">
+      <button id="btn-enable" onclick="window.enableSPA(); updateStatus('SPA Enabled')">Enable SPA</button>
+      <button id="btn-disable" onclick="window.disableSPA(); updateStatus('SPA Disabled')">Disable SPA</button>
+    </div>
+
+    <p><a href="spa_test_2.html" id="link-test">Test Link (Goes to Page 2)</a></p>
+
+    <script type="module">
+      import "../src/spa.js";
+
+      window.updateStatus = (msg) => {
+        document.getElementById("status").textContent = "Status: " + msg;
+        console.log(msg);
+      };
+
+      // Check if auto-enable worked (if we added spa attribute to html, but here we didn't yet)
+      // We can manually test the attribute case by modifying the DOM before import or using a separate file.
+      // For this file, we test the JS API.
+    </script>
+  </body>
+</html>

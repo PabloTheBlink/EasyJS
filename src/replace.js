@@ -43,7 +43,7 @@
   function updateChildren(container, clone) {
     const originalChildren = container.childNodes;
     const updatedChildren = clone.childNodes;
-    const maxLength = Math.max(originalChildren.length, updatedChildren.length);
+    let maxLength = Math.max(originalChildren.length, updatedChildren.length);
 
     for (let i = 0; i < maxLength; i++) {
       const originalChild = originalChildren[i];

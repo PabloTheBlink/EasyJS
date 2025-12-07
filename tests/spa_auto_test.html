@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" spa>
+  <head>
+    <meta charset="UTF-8" />
+    <title>SPA Auto-Init Test</title>
+  </head>
+  <body>
+    <h1>Auto-Init Test page</h1>
+    <p>This page has &lt;html spa&gt; attribute.</p>
+    <a href="spa_test_1.html" id="link-back">Back to Page 1</a>
+    <script type="module" src="../src/spa.js"></script>
+    <script>
+      // Simple indicator to check if listeners are attached is hard without inspecting internal state,
+      // but we can check if behavior is SPA-like (preventDefault).
+      // For visual info:
+      document.body.insertAdjacentHTML("beforeend", "<p>Loaded with spa attribute.</p>");
+    </script>
+  </body>
+</html>
