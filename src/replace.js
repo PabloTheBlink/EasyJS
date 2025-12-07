@@ -50,8 +50,21 @@
       const updatedChild = updatedChildren[i];
 
       if (!originalChild && updatedChild) {
-        const newChild = updatedChild.nodeType === Node.ELEMENT_NODE && updatedChild.tagName === "SCRIPT" ? createExecutableScript(updatedChild) : updatedChild.cloneNode(true);
-        container.appendChild(newChild);
+        if (updatedChild.nodeType === Node.ELEMENT_NODE && updatedChild.tagName === "SCRIPT") {
+          const newScript = document.createElement("script");
+          Array.from(updatedChild.attributes).forEach((attr) => {
+            if (attr.name !== "src") newScript.setAttribute(attr.name, attr.value);
+          });
+          if (!updatedChild.src) {
+            newScript.textContent = updatedChild.textContent;
+          }
+          container.appendChild(newScript);
+          if (updatedChild.src) {
+            newScript.src = updatedChild.src;
+          }
+        } else {
+          container.appendChild(updatedChild.cloneNode(true));
+        }
       } else if (originalChild && !updatedChild) {
         originalChild.remove();
         i--;
@@ -69,21 +82,60 @@
       }
     } else if (originalChild.nodeType === Node.ELEMENT_NODE && updatedChild.nodeType === Node.ELEMENT_NODE) {
       if (originalChild.tagName === updatedChild.tagName) {
-        updateElementNode(originalChild, updatedChild);
+        if (updatedChild.tagName === "SCRIPT") {
+          const newScript = document.createElement("script");
+          Array.from(updatedChild.attributes).forEach((attr) => {
+            if (attr.name !== "src") {
+              newScript.setAttribute(attr.name, attr.value);
+            }
+          });
+          if (!updatedChild.src) {
+            newScript.textContent = updatedChild.textContent;
+          }
+          originalChild.replaceWith(newScript);
+          if (updatedChild.src) {
+            newScript.src = updatedChild.src;
+          }
+        } else {
+          updateElementNode(originalChild, updatedChild);
+        }
       } else {
-        const clonedNode = updatedChild.tagName === "SCRIPT" ? createExecutableScript(updatedChild) : updatedChild.cloneNode(true);
-        originalChild.replaceWith(clonedNode);
+        if (updatedChild.tagName === "SCRIPT") {
+          const newScript = document.createElement("script");
+          Array.from(updatedChild.attributes).forEach((attr) => {
+            if (attr.name !== "src") {
+              newScript.setAttribute(attr.name, attr.value);
+            }
+          });
+          if (!updatedChild.src) {
+            newScript.textContent = updatedChild.textContent;
+          }
+          originalChild.replaceWith(newScript);
+          if (updatedChild.src) {
+            newScript.src = updatedChild.src;
+          }
+        } else {
+          originalChild.replaceWith(updatedChild.cloneNode(true));
+        }
       }
     } else {
-      const clonedNode = updatedChild.nodeType === Node.ELEMENT_NODE && updatedChild.tagName === "SCRIPT" ? createExecutableScript(updatedChild) : updatedChild.cloneNode(true);
-      originalChild.replaceWith(clonedNode);
+      if (updatedChild.nodeType === Node.ELEMENT_NODE && updatedChild.tagName === "SCRIPT") {
+        const newScript = document.createElement("script");
+        Array.from(updatedChild.attributes).forEach((attr) => {
+          if (attr.name !== "src") {
+            newScript.setAttribute(attr.name, attr.value);
+          }
+        });
+        if (!updatedChild.src) {
+          newScript.textContent = updatedChild.textContent;
+        }
+        originalChild.replaceWith(newScript);
+        if (updatedChild.src) {
+          newScript.src = updatedChild.src;
+        }
+      } else {
+        originalChild.replaceWith(updatedChild.cloneNode(true));
+      }
     }
-  }
-
-  function createExecutableScript(oldScript) {
-    const newScript = document.createElement("script");
-    Array.from(oldScript.attributes).forEach((attr) => newScript.setAttribute(attr.name, attr.value));
-    newScript.textContent = oldScript.textContent;
-    return newScript;
   }
 })();
