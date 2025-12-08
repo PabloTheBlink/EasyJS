@@ -7,7 +7,7 @@
 
     // Ignore external links, hash links, or links with target="_blank"
     const url = new URL(link.href);
-    if (url.origin !== window.location.origin || link.hash || link.href.match(/^#|\/#/) || link.target === "_blank" || link.hasAttribute("data-no-spa")) {
+    if (url.origin !== window.location.origin || link.hash || link.target === "_blank" || link.hasAttribute("data-no-spa")) {
       return;
     }
 
@@ -36,7 +36,21 @@
     }
   };
 
-  const spaPopstateHandler = async () => {
+  const spaPopstateHandler = async (e) => {
+    // If the state object contains a hash, it means we might be navigating to a hash on the current page.
+    // However, the spaClickHandler explicitly ignores hash links, so popstate should primarily handle full URL changes.
+    // If the URL only changed its hash, the browser typically handles scrolling, and we don't need to refetch the page.
+    // We only proceed with fetching if the pathname or search parameters have changed.
+    const currentPath = window.location.pathname + window.location.search;
+    const previousPath = e.state ? e.state.path : null; // Assuming we store path in state when pushing
+
+    if (previousPath && currentPath === previousPath && window.location.hash) {
+      // This scenario implies a popstate event where only the hash changed,
+      // which is unlikely if spaClickHandler ignores hash links.
+      // If it happens, the browser's default scroll-to-hash behavior should suffice.
+      return;
+    }
+
     try {
       const response = await fetch(window.location.href);
       if (!response.ok) throw new Error("Network response was not ok");
