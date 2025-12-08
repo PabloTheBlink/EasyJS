@@ -24,6 +24,7 @@
       // Requesting to replace everything, so we target documentElement
       doc.documentElement.replace(newDoc.documentElement);
       window.dispatchEvent(new Event("load"));
+      window.dispatchEvent(new Event("DOMContentLoaded"));
 
       // Update history
       window.history.pushState({}, "", url);
@@ -44,6 +45,7 @@
 
       doc.documentElement.replace(newDoc.documentElement);
       window.dispatchEvent(new Event("load"));
+      window.dispatchEvent(new Event("DOMContentLoaded"));
     } catch (error) {
       console.error("EasyJS SPA Error (popstate):", error);
       window.location.reload();

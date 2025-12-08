@@ -83,6 +83,9 @@
     } else if (originalChild.nodeType === Node.ELEMENT_NODE && updatedChild.nodeType === Node.ELEMENT_NODE) {
       if (originalChild.tagName === updatedChild.tagName) {
         if (updatedChild.tagName === "SCRIPT") {
+          if (originalChild.textContent === updatedChild.textContent && originalChild.src === updatedChild.src) {
+            return;
+          }
           const newScript = document.createElement("script");
           Array.from(updatedChild.attributes).forEach((attr) => {
             if (attr.name !== "src") {
