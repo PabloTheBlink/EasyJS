@@ -26,6 +26,7 @@
       window.dispatchEvent(new Event("load"));
       window.dispatchEvent(new Event("DOMContentLoaded"));
       document.dispatchEvent(new Event("DOMContentLoaded"));
+      window.scrollTo({ top: 0, behavior: "smooth" });
 
       // Update history
       window.history.pushState({}, "", url);
@@ -48,6 +49,7 @@
       window.dispatchEvent(new Event("load"));
       window.dispatchEvent(new Event("DOMContentLoaded"));
       document.dispatchEvent(new Event("DOMContentLoaded"));
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
       console.error("EasyJS SPA Error (popstate):", error);
       window.location.reload();
