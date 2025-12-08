@@ -7,7 +7,7 @@
 
     // Ignore external links, hash links, or links with target="_blank"
     const url = new URL(link.href);
-    if (url.origin !== window.location.origin || link.hash || link.target === "_blank" || link.hasAttribute("data-no-spa")) {
+    if (url.origin !== window.location.origin || link.hash || link.href.match(/^#|\/#/) || link.target === "_blank" || link.hasAttribute("data-no-spa")) {
       return;
     }
 
